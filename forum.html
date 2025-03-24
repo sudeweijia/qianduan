@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>论坛</title>
+</head>
+<body>
+    <h1>论坛</h1>
+    <div id="posts"></div>
+    <input type="text" id="content" placeholder="输入讨论内容">
+    <button onclick="submitPost()">提交</button>
+    <script>
+        // 从后端加载帖子
+        async function loadPosts() {
+            const response = await fetch('/api/forum');
+            const posts = await response.json();
+            document.getElementById('posts').innerHTML = posts.map(post => 
+                `<div>${post.content}</div>`
+            ).join('');
+        }
+
+        // 提交新帖子
+        async function submitPost() {
+            const content = document.getElementById('content').value;
+            await fetch('/api/forum', {
+                method: 'POST',
+                body: JSON.stringify({ content })
+            });
+            loadPosts();
+        }
+
+        loadPosts();
+    </script>
+</body>
+</html>

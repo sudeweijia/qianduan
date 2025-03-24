@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>公告</title>
+</head>
+<body>
+    <h1>公告</h1>
+    <div id="announcement"></div>
+    <script>
+        // 从后端加载公告
+        async function loadAnnouncement() {
+            const response = await fetch('/api/announcement');
+            const data = await response.json();
+            document.getElementById('announcement').textContent = data.content;
+        }
+        loadAnnouncement();
+    </script>
+</body>
+</html>

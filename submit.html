@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>提交</title>
+</head>
+<body>
+    <h1>提交内容</h1>
+    <input type="text" id="message" placeholder="输入内容">
+    <button onclick="submitMessage()">提交</button>
+    <script>
+        async function submitMessage() {
+            const message = document.getElementById('message').value;
+            await fetch('/api/submit', {
+                method: 'POST',
+                body: JSON.stringify({ message })
+            });
+            alert("提交成功！");
+        }
+    </script>
+</body>
+</html>
