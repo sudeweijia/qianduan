@@ -6,12 +6,12 @@
 <body>
     <h1>公告</h1>
     <div id="announcement"></div>
+
     <script>
-        // 从后端加载公告
         async function loadAnnouncement() {
-            const response = await fetch('/api/announcement');
-            const data = await response.json();
-            document.getElementById('announcement').textContent = data.content;
+            const response = await fetch('https://houduan.1494130690.workers.dev/api/announcement');
+            const { content } = await response.json();
+            document.getElementById('announcement').textContent = content;
         }
         loadAnnouncement();
     </script>
