@@ -1,39 +1,43 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>提交</title>
+    <title>提交内容</title>
+    <style>
+        #message { width: 100%; padding: 10px; margin-bottom: 10px; }
+        #result { margin-top: 10px; padding: 10px; }
+        .success { background: #d4edda; }
+        .error { background: #f8d7da; }
+    </style>
 </head>
 <body>
     <h1>提交内容</h1>
     <input type="text" id="message" placeholder="输入内容">
     <button onclick="submitMessage()">提交</button>
+    <div id="result"></div>
+
     <script>
         async function submitMessage() {
             const message = document.getElementById('message').value;
+            const resultDiv = document.getElementById('result');
             
-            // ============= 主要修改部分开始 =============
             try {
-                const response = await fetch(
-                    'https://houduan.1494130690.workers.dev',  // 替换为你的Worker完整地址
-                    {
-                        method: 'POST',
-                        headers: {  // 新增：必须设置请求头
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ message })
-                    }
-                );
+                const response = await fetch('https://houduan.1494130690.workers.dev/api/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+
+                if (!response.ok) throw new Error('提交失败');
                 
-                if (!response.ok) {
-                    throw new Error('提交失败: ' + response.status);
-                }
+                resultDiv.textContent = '提交成功！';
+                resultDiv.className = 'success';
+                document.getElementById('message').value = '';
                 
-                alert("提交成功！");
             } catch (error) {
+                resultDiv.textContent = '提交失败: ' + error.message;
+                resultDiv.className = 'error';
                 console.error('提交错误:', error);
-                alert("提交失败！请检查控制台日志");
             }
-            // ============= 主要修改部分结束 =============
         }
     </script>
 </body>
