@@ -3,15 +3,16 @@
 <head>
     <title>提交内容</title>
     <style>
-        #message { width: 100%; padding: 10px; margin-bottom: 10px; }
-        #result { margin-top: 10px; padding: 10px; }
-        .success { background: #d4edda; }
-        .error { background: #f8d7da; }
+        #message { width: 300px; padding: 10px; margin: 10px 0; }
+        button { padding: 10px 20px; background: #4CAF50; color: white; border: none; }
+        #result { margin: 10px 0; padding: 10px; border-radius: 4px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
     </style>
 </head>
 <body>
-    <h1>提交内容</h1>
-    <input type="text" id="message" placeholder="输入内容">
+    <h1>提交内容到Worker</h1>
+    <input type="text" id="message" placeholder="输入要提交的内容">
     <button onclick="submitMessage()">提交</button>
     <div id="result"></div>
 
@@ -20,23 +21,34 @@
             const message = document.getElementById('message').value;
             const resultDiv = document.getElementById('result');
             
+            if (!message) {
+                resultDiv.textContent = '请输入内容！';
+                resultDiv.className = 'error';
+                return;
+            }
+
             try {
-                const response = await fetch('https://houduan.1494130690.workers.dev', {
+                // 注意URL必须包含/api/submit路径
+                const response = await fetch('https://houduan.1494130690.workers.dev/api/submit', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                    },
                     body: JSON.stringify({ message })
                 });
 
-                if (!response.ok) throw new Error('提交失败');
+                const result = await response.text();
                 
-                resultDiv.textContent = '提交成功！';
+                if (!response.ok) throw new Error(result || '提交失败');
+                
+                resultDiv.textContent = '提交成功！服务器返回: ' + result;
                 resultDiv.className = 'success';
                 document.getElementById('message').value = '';
                 
             } catch (error) {
                 resultDiv.textContent = '提交失败: ' + error.message;
                 resultDiv.className = 'error';
-                console.error('提交错误:', error);
+                console.error('完整错误:', error);
             }
         }
     </script>
