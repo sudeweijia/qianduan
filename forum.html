@@ -2,30 +2,35 @@
 <html>
 <head>
     <title>论坛</title>
+    <style>
+        #posts { border: 1px solid #ddd; padding: 15px; min-height: 100px; margin-bottom: 10px; }
+        #content { width: 100%; padding: 8px; }
+    </style>
 </head>
 <body>
     <h1>论坛</h1>
     <div id="posts"></div>
     <input type="text" id="content" placeholder="输入讨论内容">
     <button onclick="submitPost()">提交</button>
+
     <script>
-        // 从后端加载帖子
         async function loadPosts() {
-            const response = await fetch('/api/forum');
+            const response = await fetch('https://houduan.1494130690.workers.dev/api/forum');
             const posts = await response.json();
-            document.getElementById('posts').innerHTML = posts.map(post => 
-                `<div>${post.content}</div>`
-            ).join('');
+            document.getElementById('posts').innerHTML = posts
+                .map(post => `<div><strong>${new Date(post.timestamp).toLocaleString()}:</strong> ${post.content}</div>`)
+                .join('');
         }
 
-        // 提交新帖子
         async function submitPost() {
             const content = document.getElementById('content').value;
-            await fetch('/api/forum', {
+            await fetch('https://houduan.1494130690.workers.dev/api/forum', {
                 method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ content })
             });
             loadPosts();
+            document.getElementById('content').value = '';
         }
 
         loadPosts();
